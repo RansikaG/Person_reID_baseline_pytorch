@@ -91,47 +91,48 @@ if not os.path.isdir(save_path):
 #         copyfile(src_path, dst_path + '/' + name)
 
 # ---------------------------------------
-# train_all
-# This takes all the images from train and val and creates train_all folder
+# train
+# This takes all the images from train and val and creates train folder
 train_path = download_path + '/train/images'
 train_label_path = download_path + '/train/labels'
 val_path = download_path + '/val/images'
 val_label_path = download_path + '/val/labels'
-train_all_save_path = download_path + '/pytorch/train_all'
-if not os.path.isdir(train_all_save_path):
-    os.mkdir(train_all_save_path)
-
-for paths in [(train_path, train_label_path), (val_path, val_label_path)]:
-    for root, dirs, files in os.walk(paths[0], topdown=True):
-        for name in files:
-            if not name[-3:] == 'jpg':
-                continue
-            ID = clean_ID(name)
-            src_path = paths[0] + '/' + name
-            src_label_path = paths[1] + '/' + name[:-3] + 'txt'
-            dst_path = train_all_save_path + '/' + ID + boat_class(src_label_path)
-            if not os.path.isdir(dst_path):
-                os.mkdir(dst_path)
-            save_grayscale(src_path, dst_path + '/' + name)
+train_save_path = download_path + '/pytorch/train'
+if not os.path.isdir(train_save_path):
+    os.mkdir(train_save_path)
+    for paths in [(train_path, train_label_path), (val_path, val_label_path)]:
+        for root, dirs, files in os.walk(paths[0], topdown=True):
+            for name in files:
+                if not name[-3:] == 'jpg':
+                    continue
+                ID = clean_ID(name)
+                src_path = paths[0] + '/' + name
+                src_label_path = paths[1] + '/' + name[:-3] + 'txt'
+                dst_path = train_save_path + '/' + ID + boat_class(src_label_path)
+                if not os.path.isdir(dst_path):
+                    os.mkdir(dst_path)
+                save_grayscale(src_path, dst_path + '/' + name)
 
 # ---------------------------------------
 # train_val
-# train_path = download_path + '/val/images'
-# train_save_path = download_path + '/pytorch/train'
-# val_save_path = download_path + '/pytorch/val'
-# if not os.path.isdir(train_save_path):
-#     os.mkdir(train_save_path)
-#     os.mkdir(val_save_path)
-#
-# for root, dirs, files in os.walk(train_path, topdown=True):
-#     for name in files:
-#         if not name[-3:]=='jpg':
-#             continue
-#         ID  = name.split('_')
-#         src_path = train_path + '/' + name
-#         dst_path = train_save_path + '/' + ID[0]
-#         if not os.path.isdir(dst_path):
-#             os.mkdir(dst_path)
-#             dst_path = val_save_path + '/' + ID[0]  #first image is used as val image
-#             os.mkdir(dst_path)
-#         copyfile(src_path, dst_path + '/' + name)
+val_save_path = download_path + '/pytorch/val'
+if not os.path.isdir(val_save_path):
+    os.mkdir(val_save_path)
+
+folder_index = -1
+folders = ()
+for root, dirs, files in os.walk(train_save_path, topdown=True):
+    if folder_index == -1 :
+        folders = dirs
+    else:
+        name = files[-1]
+        if not name[-3:] =='jpg':
+            continue
+        dest_folder_name = folders[folder_index]
+        src_path = train_save_path + '/' + dest_folder_name + '/' + name
+        dst_path = val_save_path + '/' + dest_folder_name
+        if not os.path.isdir(dst_path):
+            os.mkdir(dst_path)
+        copyfile(src_path, dst_path + '/' + name)
+        os.remove(src_path)
+    folder_index += 1
