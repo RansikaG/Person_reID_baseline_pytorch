@@ -9,6 +9,22 @@ def save_grayscale(source, destination):
     img.save(destination)
 
 
+# Checks the boat class from the labels and return the class as a string
+def boat_class(txt_file_path):
+    file = open(txt_file_path, 'r')
+    contents = file.read()
+    boat_cls = contents.split(' ')
+    return boat_cls[0]
+
+def clean_ID(name):
+    ID = name.split('_')[0]
+    slices = ID.split('-')
+    if slices[-1].isnumeric():
+        clean_name = '-'.join(slices[:-1])
+    else:
+        clean_name = '-'.join(slices)
+    return clean_name
+
 # You only need to change this line to your dataset download path
 download_path = 'F:/Downloads/archive/Ships dataset'
 
@@ -78,19 +94,22 @@ if not os.path.isdir(save_path):
 # train_all
 # This takes all the images from train and val and creates train_all folder
 train_path = download_path + '/train/images'
+train_label_path = download_path + '/train/labels'
 val_path = download_path + '/val/images'
+val_label_path = download_path + '/val/labels'
 train_all_save_path = download_path + '/pytorch/train_all'
 if not os.path.isdir(train_all_save_path):
     os.mkdir(train_all_save_path)
 
-for path in [train_path, val_path]:
-    for root, dirs, files in os.walk(path, topdown=True):
+for paths in [(train_path, train_label_path), (val_path, val_label_path)]:
+    for root, dirs, files in os.walk(paths[0], topdown=True):
         for name in files:
             if not name[-3:] == 'jpg':
                 continue
-            ID = name.split('_')
-            src_path = path + '/' + name
-            dst_path = train_all_save_path + '/' + ID[0]
+            ID = clean_ID(name)
+            src_path = paths[0] + '/' + name
+            src_label_path = paths[1] + '/' + name[:-3] + 'txt'
+            dst_path = train_all_save_path + '/' + ID + boat_class(src_label_path)
             if not os.path.isdir(dst_path):
                 os.mkdir(dst_path)
             save_grayscale(src_path, dst_path + '/' + name)
