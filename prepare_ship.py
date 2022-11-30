@@ -47,6 +47,7 @@ val_label_path = download_path + '/val/labels'
 test_path = download_path + '/test/images'
 test_label_path = download_path + '/test/labels'
 train_save_path = download_path + '/pytorch/train'
+
 if not os.path.isdir(train_save_path):
     os.mkdir(train_save_path)
     for paths in [(train_path, train_label_path), (val_path, val_label_path), (test_path, test_label_path)]:
@@ -61,11 +62,15 @@ if not os.path.isdir(train_save_path):
                 if not os.path.isdir(dst_path):
                     os.mkdir(dst_path)
                 save_grayscale(src_path, dst_path + '/' + name)
+    # rmtree(train_save_path + '/' + 'USS-Bulkeley-DDG845')
 
+folders_with_name = os.listdir(train_save_path)
+for i, folder in enumerate(folders_with_name):
+    os.rename(os.path.join(train_save_path, folder), os.path.join(train_save_path, str(i).zfill(3)))
 # ---------------------------------------
 # gallery
 gallery_save_path = download_path + '/pytorch/gallery'
-gallery_size = 50
+gallery_size = int(len(folders_with_name)/2)
 
 if not os.path.isdir(gallery_save_path):
     os.mkdir(gallery_save_path)
