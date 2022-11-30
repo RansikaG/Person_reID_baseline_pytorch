@@ -72,7 +72,7 @@ class ClassBlock(nn.Module):
 # Define the ResNet50-based Model
 class ft_net(nn.Module):
 
-    def __init__(self, class_num=751, droprate=0.5, stride=2, circle=False, ibn=False, linear_num=512):
+    def __init__(self, class_num=526, droprate=0.5, stride=2, circle=False, ibn=False, linear_num=512):
         super(ft_net, self).__init__()
         model_ft = models.resnet50(pretrained=True)
         if ibn==True:
@@ -267,7 +267,7 @@ class ft_net_NAS(nn.Module):
 # In the spirit of "The Devil is in the Middle: Exploiting Mid-level Representations for Cross-Domain Instance Matching." Yu, Qian, et al. arXiv:1711.08106 (2017).
 class ft_net_middle(nn.Module):
 
-    def __init__(self, class_num=751, droprate=0.5):
+    def __init__(self, class_num=526, droprate=0.5):
         super(ft_net_middle, self).__init__()
         model_ft = models.resnet50(pretrained=True)
         # avg pooling to global pooling
@@ -368,11 +368,11 @@ python model.py
 if __name__ == '__main__':
 # Here I left a simple forward function.
 # Test the model, before you train it. 
-    net = ft_net_hr(751)
+    net = ft_net_hr(526)
     #net = ft_net_swin(751, stride=1)
     net.classifier = nn.Sequential()
     print(net)
-    input = Variable(torch.FloatTensor(8, 3, 224, 224))
+    input = Variable(torch.FloatTensor(8, 1, 224, 224))
     output = net(input)
     print('net output size:')
     print(output.shape)

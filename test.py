@@ -69,7 +69,7 @@ if 'use_hr' in config:
 if 'nclasses' in config: # tp compatible with old config files
     opt.nclasses = config['nclasses']
 else: 
-    opt.nclasses = 751 
+    opt.nclasses = 526
 
 if 'ibn' in config:
     opt.ibn = config['ibn']
