@@ -29,7 +29,7 @@ def clean_ID(name):
 
 
 # You only need to change this line to your dataset download path
-download_path = 'F:/Downloads/archive/Ships dataset'
+download_path = '/home/fyp3-2/Desktop/BATCH18/archive/Ships dataset'
 
 if not os.path.isdir(download_path):
     print('please change the download_path')
@@ -63,6 +63,16 @@ if not os.path.isdir(train_save_path):
                     os.mkdir(dst_path)
                 save_grayscale(src_path, dst_path + '/' + name)
     # rmtree(train_save_path + '/' + 'USS-Bulkeley-DDG845')
+iteration = -1
+folders = ()
+for root, dirs, files in os.walk(train_save_path, topdown=True):
+    if iteration == -1:
+        folders = dirs
+    else:
+        if len(files) < 5:
+            rmtree(train_save_path + '/' + folders[iteration])
+    iteration += 1
+
 
 folders_with_name = os.listdir(train_save_path)
 for i, folder in enumerate(folders_with_name):
