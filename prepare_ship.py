@@ -29,7 +29,9 @@ def clean_ID(name):
 
 
 # You only need to change this line to your dataset download path
-download_path = '/home/fyp3/Desktop/Batch18/Ransika/archive/Ships dataset'
+
+download_path = '/home/fyp3-2/Desktop/BATCH18/archive/Ships dataset'
+
 
 if not os.path.isdir(download_path):
     print('please change the download_path')
