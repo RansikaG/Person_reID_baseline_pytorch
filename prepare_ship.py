@@ -29,7 +29,7 @@ def clean_ID(name):
 
 
 # You only need to change this line to your dataset download path
-download_path = 'F:/Downloads/archive/Ships dataset'
+download_path = '/home/fyp3/Desktop/Batch18/Ransika/archive/Ships dataset'
 
 if not os.path.isdir(download_path):
     print('please change the download_path')
@@ -61,13 +61,28 @@ if not os.path.isdir(train_save_path):
                 dst_path = train_save_path + '/' + ID + boat_class(src_label_path)
                 if not os.path.isdir(dst_path):
                     os.mkdir(dst_path)
-                save_grayscale(src_path, dst_path + '/' + name)
+                save_grayscale(src_path, dst_path + '/' + name[:-3]+'jpg')
     # rmtree(train_save_path + '/' + 'USS-Bulkeley-DDG845')
+iteration = -1
+folders = ()
+for root, dirs, files in os.walk(train_save_path, topdown=True):
+    if iteration == -1:
+        folders = dirs
+    else:
+        if len(files) < 5:
+            rmtree(train_save_path + '/' + folders[iteration])
+    iteration += 1
+
 
 folders_with_name = os.listdir(train_save_path)
 for i, folder in enumerate(folders_with_name):
-    os.rename(os.path.join(train_save_path, folder), os.path.join(train_save_path, str(i).zfill(3)))
-# ---------------------------------------
+    folder_path = train_save_path + '/' + folder
+    files = os.listdir(folder_path)
+    # print(files)
+    for cam, file in enumerate(files):
+        os.rename(os.path.join(folder_path, file), os.path.join(folder_path, str(i).zfill(3)+ 'c'+str(cam))+'.png')
+    os.rename(folder_path, os.path.join(train_save_path, str(i).zfill(3)))
+# # ---------------------------------------
 # gallery
 gallery_save_path = download_path + '/pytorch/gallery'
 gallery_size = int(len(folders_with_name)/2)
@@ -95,8 +110,6 @@ for root, dirs, files in os.walk(train_save_path, topdown=True):
         folders = dirs
     else:
         name = files[-1]
-        if not name[-3:] == 'jpg':
-            continue
         dest_folder_name = folders[folder_index]
         src_path = train_save_path + '/' + dest_folder_name + '/' + name
         dst_path = val_save_path + '/' + dest_folder_name
@@ -119,8 +132,6 @@ for root, dirs, files in os.walk(gallery_save_path, topdown=True):
         folders = dirs
     else:
         name = files[-1]
-        if not name[-3:] == 'jpg':
-            continue
         dest_folder_name = folders[folder_index]
         src_path = gallery_save_path + '/' + dest_folder_name + '/' + name
         dst_path = query_save_path + '/' + dest_folder_name
